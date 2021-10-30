@@ -1188,7 +1188,7 @@ Vocabulary
           <property name="tooltip" translatable="yes" context="Accel Editor (descriptions)">Pop up a brush changer under the cursor.</property>
           <signal name="activate" handler="quick_chooser_popup_cb"/>
         </object>
-        <accelerator key="b"/>
+        <!-- <accelerator key="b"/> -->
       </child>
       <child>
         <object class="GtkAction" id="ColorChooserPopup">
@@ -1197,7 +1197,7 @@ Vocabulary
           <property name="icon-name">mypaint-colors-symbolic</property>
           <signal name="activate" handler="quick_chooser_popup_cb"/>
         </object>
-        <accelerator key="v" modifiers="GDK_SHIFT_MASK"/>
+        <!-- <accelerator key="v" modifiers="GDK_SHIFT_MASK"/> -->
       </child>
       <child>
         <object class="GtkAction" id="ColorChooserPopupFastSubset">
@@ -1206,7 +1206,7 @@ Vocabulary
           <property name="icon-name">mypaint-colors-symbolic</property>
           <signal name="activate" handler="quick_chooser_popup_cb"/>
         </object>
-        <accelerator key="v"/>
+        <!-- <accelerator key="v"/> -->
       </child>
       <child>
         <object class="GtkAction" id="DownloadBrushPack">

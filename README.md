@@ -1,3 +1,16 @@
+# changes
+
+Hacks to use key to draw instead of clicking with the mouse,
+
+In freehand mode:
+
+"x" to toggle keyboard brush,
+
+SHIFT to draw
+
+
+
+
 <p align="center">
     <img src="pixmaps/mypaint_logo.png?raw=true" height="100px"/>
     <h1 align="center">MyPaint</h1>

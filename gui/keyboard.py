@@ -271,6 +271,7 @@ class KeyboardManager:
         handler_ids = []
         for name, cb in [("key-press-event", self._key_press_cb),
                          ("key-release-event", self._key_release_cb)]:
+            print("Adding %s handler for %r" % (name, window))
             handler_id = window.connect(name, cb)
             handler_ids.append(handler_id)
         if actions is not None:
