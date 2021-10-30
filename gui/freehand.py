@@ -58,6 +58,8 @@ class FreehandMode (gui.mode.BrushworkModeMixin,
 
     IS_LIVE_UPDATEABLE = True
 
+    DRAW_MODE_TOGGLE= False
+
     # Motion queue processing (raw data capture)
 
     # This controls processing of an internal queue of event data such
@@ -279,8 +281,75 @@ class FreehandMode (gui.mode.BrushworkModeMixin,
             self._cursor_hidden_tdws.remove(tdw)
 
     ## Input handlers
+    def key_press_cb(self, win, tdw, event):
+        #65505 = SHIFT
+        
+        if event.keyval == Gdk.KEY_x:
+            self.DRAW_MODE_TOGGLE = not self.DRAW_MODE_TOGGLE 
+        print(self.DRAW_MODE_TOGGLE)
+        # if self.DRAW_MODE_TOGGLE:
+        #     self.brush_on(tdw, event)
+        # else:
+        #     self.brush_off(tdw, event)
+        return True           
+        # print("freehand press")
+        # print(event.keyval)
+    def brush_on(self, tdw, event):
+        current_layer = tdw.doc.layer_stack.current
+        if current_layer.get_paintable():
+            # Single button press
+            # Stroke started, notify observers
+            self.doc.input_stroke_started(event)
+            # Mouse button pressed (while painting without pressure
+            # information)
+            drawstate = self._get_drawing_state(tdw)
+            if not drawstate.last_event_had_pressure:
+                # For the mouse we don't get a motion event for
+                # "pressure" changes, so we simulate it. (Note: we can't
+                # use the event's button state because it carries the
+                # old state.)
+                self.motion_notify_cb(tdw, event,
+                                      fakepressure=tdw.app.fakepressure)
+            drawstate.button_down = 1 #event.button
+            drawstate.last_good_raw_pressure = 0.0
+            drawstate.last_good_raw_xtilt = 0.0
+            drawstate.last_good_raw_ytilt = 0.0
+            drawstate.last_good_raw_viewzoom = 0.0
+            drawstate.last_good_raw_viewrotation = 0.0
+            drawstate.last_good_raw_barrel_rotation = 0.0
+            # Hide the cursor if configured to
+            self._hide_drawing_cursor(tdw)        
+    def brush_off(self, tdw, event):
+        current_layer = tdw.doc.layer_stack.current
+        if current_layer.get_paintable() :
+            # Single button press
+            # Stroke started, notify observers
+            self.doc.input_stroke_started(event)
+            # Mouse button pressed (while painting without pressure
+            # information)
+            drawstate = self._get_drawing_state(tdw)
+            if not drawstate.last_event_had_pressure:
+                # For the mouse we don't get a motion event for
+                # "pressure" changes, so we simulate it. (Note: we can't    
+                # use the event's button state because it carries the
+                # old state.)
+                self.motion_notify_cb(tdw, event,
+                                      fakepressure=tdw.app.fakepressure)
+
+            drawstate.button_down = 1# event.button
+            drawstate.last_good_raw_pressure = 0.0
+            drawstate.last_good_raw_xtilt = 0.0
+            drawstate.last_good_raw_ytilt = 0.0
+            drawstate.last_good_raw_viewzoom = 0.0
+            drawstate.last_good_raw_viewrotation = 0.0
+            drawstate.last_good_raw_barrel_rotation = 0.0
+            # Hide the cursor if configured to
+            self._hide_drawing_cursor(tdw)
+
 
     def button_press_cb(self, tdw, event):
+        print("event button: ",)
+        print(event.button)
         result = False
         current_layer = tdw.doc.layer_stack.current
         if (current_layer.get_paintable() and event.button == 1
@@ -306,7 +375,7 @@ class FreehandMode (gui.mode.BrushworkModeMixin,
             drawstate.last_good_raw_viewzoom = 0.0
             drawstate.last_good_raw_viewrotation = 0.0
             drawstate.last_good_raw_barrel_rotation = 0.0
-
+            print ("clicked")
             # Hide the cursor if configured to
             self._hide_drawing_cursor(tdw)
 
@@ -353,6 +422,9 @@ class FreehandMode (gui.mode.BrushworkModeMixin,
         current_layer = tdw.doc._layers.current
         if not (tdw.is_sensitive and current_layer.get_paintable()):
             return False
+        if self.DRAW_MODE_TOGGLE:
+            fakepressure = tdw.app.fakepressure
+            pass
 
         # If the device has changed and the last pressure value from the
         # previous device is not equal to 0.0, this can leave a visible
